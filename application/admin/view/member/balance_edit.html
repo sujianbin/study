@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button  type="button" class="btn btn-primary btn-redirect" name="{:url('member/index')}">会员列表</button>
+                    <button  type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('member/balanceEdit',['id'=>$member_id])}">余额调整</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">余额调整</div>
+                    <div class="Role_list">
+                        <form name="myform" action="{:url('member/balanceUpdate')}" method="post">
+                            <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                <tbody>
+
+                                	<tr>
+                                        <th width="20%">所属会员</th>
+                                        <td width="80%">
+                                            <select name="member_id" style="margin-left: 10px;height:35px">
+                                                {volist name="member" id="vo"}
+                                                    <option value="{$vo['id']}">{$vo['realname']|get_first_charter} -- {$vo['realname']}</option>
+                                                {/volist}
+                                            </select>
+                                            <br />
+                                            <span class="ps">请选择所属会员</span>
+                                        </td>
+                                    </tr>
+                                  
+                                    <tr>
+                                        <th width="20%">金额数</th>
+                                        <td width="80%"><input type="text" style="width:300px" name="money" value="{$model['money']}"/>
+                                            <br />
+                                            <span class="ps">请填写金额数,金额数必须大于0，结果保留两位有效数字</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">余额增减</th>
+                                        <td width="80%">
+                                            <select name="status" style="margin-left: 10px;height:35px">
+                                                <option value="1">增加</option>
+                                                <option value="2">减少</option>
+                                            </select>
+                                            <br />
+                                            <span class="ps"></span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <div class="btn_operating">
+                                <input  type="submit" class="btn btn-primary btn-submit"/>
+                                <input  type="reset" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        $(function(){
+            $("select[name=member_id] option[value={$member_id}]").attr("selected","selected");
+        })
+    </script>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{layout name="public/layout" /}
+</head>
+<body>
+	<div class="page-content" id="tt">
+		<div class="page-header">
+			<h1>{$Think.session.user_name}欢迎您使用后台管理系统,您本次登陆时间:{$admin['login_time']},登陆ip:{$admin['ip']}<small></small></h1>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">							
+	            <div class="index_style">
+					<div class="frame xjdd_style">
+	                    <span class="title_name">信息统计</span>
+	                    <div class="content">
+	                        <div class="xj_list clearfix">
+	                        	<a href="{:url('orders/index',['status'=>1])}" class="message_index_a">
+									<div class="message_index">
+										<div class="message_index_img"><img src="__PUBLIC__/images/orders.png"></div>
+										<div class="message_index_desc">
+											<div class="message_index_title">待处理订单</div>
+											<div class="message_index_num">{$info['orders']}</div>
+										</div>
+									</div>
+								</a>
+								<a href="{:url('goods/index')}" class="message_index_a">
+									<div class="message_index">
+										<div class="message_index_img"><img src="__PUBLIC__/images/products.png"></div>
+										<div class="message_index_desc">
+											<div class="message_index_title">商品数量</div>
+											<div class="message_index_num">{$info['allProduct']}</div>
+										</div>
+									</div>
+								</a>
+								<a href="{:url('member/index')}" class="message_index_a">
+									<div class="message_index">
+										<div class="message_index_img"><img src="__PUBLIC__/images/vip.png"></div>
+										<div class="message_index_desc">
+											<div class="message_index_title">会员总数</div>
+											<div class="message_index_num">{$info['allMember']}</div>
+										</div>
+									</div>
+								</a>
+	                    	</div>
+	                	</div>
+	            	</div>
+	                <!--结束-->
+					<div class="frame xjdd_style">
+	                    <span class="title_name">今日统计</span>
+	                    <div class="content">
+	                        <div class="xj_list clearfix">
+	                        	<a href="{:url('orders/index',['btime'=>$info['time']])}" class="message_index_a">
+									<div class="message_index">
+										<div class="message_index_img"><img src="__PUBLIC__/images/orders.png"></div>
+										<div class="message_index_desc">
+											<div class="message_index_title">新增订单</div>
+											<div class="message_index_num">{$info['addOrders']}</div>
+										</div>
+									</div>
+								</a>
+								<a href="{:url('goods/index',['btime'=>$info['time']])}" class="message_index_a">
+									<div class="message_index">
+										<div class="message_index_img"><img src="__PUBLIC__/images/products.png"></div>
+										<div class="message_index_desc">
+											<div class="message_index_title">新增商品</div>
+											<div class="message_index_num">{$info['addProduct']}</div>
+										</div>
+									</div>
+								</a>
+								<a href="{:url('member/index',['btime'=>$info['time']])}" class="message_index_a">
+									<div class="message_index">
+										<div class="message_index_img"><img src="__PUBLIC__/images/vip.png"></div>
+										<div class="message_index_desc">
+											<div class="message_index_title">新增会员</div>
+											<div class="message_index_num">{$info['addMember']}</div>
+										</div>
+									</div>
+								</a>
+	                    	</div>
+	                	</div>
+	            	</div>
+	                <!--结束-->
+	                <div class="frame ddgl_style">
+	                    <span  class="title_name">常用管理</span>
+                        <div class="content">
+                            <div class="xj_list clearfix">
+	                            <dl>
+		                            <dt>
+		                            	<a href="{:url('config/index')}"><img src="/public/static/admin/images/config.png"/></a>
+			                        </dt>
+			                        <dd>
+			                        	<a href="{:url('config/index')}">网站基本配置</a>
+			                        </dd>
+		                        </dl>
+	                        
+		                       	<dl>
+		                           	<dt>
+		                           		<a href="{:url('banner/index')}"><img src="/public/static/admin/images/banner.png"/></a>
+   			                        </dt>
+   			                        <dd>
+   			                        	<a href="{:url('banner/index')}">首页轮播图管理</a>
+   			                        </dd>
+		                       	</dl>
+
+							   	<dl>
+							       	<dt>
+							       		<a href="{:url('comment/index')}"><img src="/public/static/admin/images/message.png"/></a>
+   			                        </dt>
+   			                        <dd>
+   			                        	<a href="{:url('comment/index')}">在线留言管理</a>
+   			                        </dd>
+							   	</dl>
+
+	                        	<dl>
+		                            <dt>
+		                            	<a href="{:url('admin/admin')}"><img src="/public/static/admin/images/manager.png"/></a>
+			                        </dt>
+			                        <dd>
+			                        	<a href="{:url('admin/admin')}">管理员管理</a>
+			                        </dd>
+		                        </dl>
+                        	</div>
+                    	</div>
+	                </div>
+	                <!--结束-->
+	            </div>
+	           	<!-- 首页样式结束 -->
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	$(function () {
+	    $('#container').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: null,
+	            plotShadow: false
+	        },
+	        title: {
+	            text: '空间状态： 100MB/700MB'
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            type: 'pie',
+	            name: '占用空间',
+	            data: [
+	                ['剩余',   600],
+	                ['已用',   100],
+	            ]
+	        }]
+	    });
+	    $("#Role_list td").bind("hover",function(event){
+    		if(event.type == 'mouseenter'){
+    			$(this).children("#span-show").css("display","inline-block");	
+    		}else{
+    			$(this).children("#span-show").css("display","none");
+    		}
+    	});
+	});	
+</script>

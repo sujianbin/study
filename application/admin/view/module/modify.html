@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button type="button" class="btn btn-primary btn-redirect" name="{:url('module/index')}">模块列表</button>
+                    <button type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('module/modify')}">添加模块</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">{$model['cat_id']|tag_show=['添加','编辑']}模块</div>
+                    <div class="Role_list">
+                        <span style="float: left;color:red;margin-bottom: 10px;">模块生成将会生成对应的文件夹以及对应的文件，系统会自动判断文件是否存在，存在则无法生成<br />属性写了几个常用可自行扩展</span>
+                        <form name="myform" id="moduleForm" action="{:url('module/update')}" method="post">
+                            <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                <tbody>
+
+                                    <tr>
+                                        <th width="20%">所属模块</th>
+                                        <td width="80%">
+                                            <select name="module_id" class="select_id">
+                                                <option value="1">单页面</option>
+                                                <option value="2">单页栏目</option>
+                                                <option value="3">新闻</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">控制器名称</th>
+                                        <td width="80%"><input type="text" style="width:300px" name="controller" value=""/>
+                                            <br />
+                                            <span class="ps">控制器名称不能为空，且不能重复，请使用驼峰命名法</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">子类级别</th>
+                                        <td width="80%">
+                                            <select name="max_level" class="select_id">
+                                                <option value="-1">不限制</option>
+                                                <option value="0">不能添加</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">栏目名称</th>
+                                        <td width="80%"><input type="text" style="width:300px" name="cat_name" value=""/>
+                                            <br />
+                                            <span class="ps">栏目名称不能为空</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">类别多属性选择</th>
+                                        <td>
+                                            <table class="gridtable" style="margin-left: 10px;border:1px solid #E0D7D7;">
+                                                <tr width="500"><th width="102">类别</th><th>属性名</th><th>展示名</th><th>建议文本</th><th>操作</th></tr>
+                                                <tr width="500" id="category" class="move">
+                                                    <td>
+                                                        <select name="more_category[]" id="more_category[]" class="sel1">
+                                                           <option value="0">无</option>
+                                                           <option value="dantu">单图</option>
+                                                           <option value="duotu">多图</option>
+                                                           <option value="riqi">时间控件</option>
+                                                           <option value="biaoti">副标题</option>
+                                                           <option value="wenben">文本</option>
+                                                           <option value="bianjiqiBaidu">百度编辑器</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="text"  name="more_category[]" id="more_category[]" placeholder="属性" value=""/></td>
+                                                    <td><input type="text"  name="more_category[]" id="more_category[]" placeholder="展示名"/></td>
+                                                    <td><textarea  name="more_category[]" id="more_category[]" placeholder="说明" cols="20" rows="1"/></textarea></td>
+                                                    <td>
+                                                        <input type="button" class="btnOther" onclick="addcategory(this)" value="添加"/>
+                                                        <input type="button" class="btnOther" onclick="delcategory(this)" value="取消"/>
+                                                    </td>
+                                                </tr>
+                                                
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">详情多属性选择</br><span style="color:red;"></span></th>
+                                        <td>
+                                            <table class="gridtables" style="margin-left: 10px;border:1px solid #E0D7D7;">
+                                                <tr width="500"><th width="102">类别</th><th>属性名</th><th>展示名</th><th>建议文本</th><th>操作</th></tr>
+                                            
+                                                <tr width="500" id="content" class="moves">
+                                                    <td>
+                                                        <select name="more_content[]" id="more_content[]" class="sel1">
+                                                            <option value="0">无</option>
+                                                            <option value="dantu">单图</option>
+                                                            <option value="duotu">多图</option>
+                                                            <option value="riqi">时间控件</option>
+                                                            <option value="biaoti">副标题</option>
+                                                            <option value="wenben">文本</option>
+                                                            <option value="bianjiqiBaidu">百度编辑器</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="text"  name="more_content[]" id="more_content[]" placeholder="属性" value=""/></td>
+                                                    <td><input type="text" name="more_content[]" id="more_content[]" placeholder="展示名"/></td>
+                                                    <td><textarea  name="more_content[]" id="more_content[]" placeholder="说明" cols="20" rows="1"/></textarea></td>
+                                                    <td>
+                                                        <input type="button" class="btnOther" onclick="addcontent(this)" value="添加"/>
+                                                        <input type="button" class="btnOther" onclick="delcontent(this)" value="取消"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">页面标题</th>
+                                        <td width="80%"><input type="text" style="width:40%;" name="seo_title" value=""><br />
+                                            <span class="ps">不填写默认为栏目名称</span></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">页面关键字</th>
+                                        <td width="80%"><input type="text" style="width:80%;" name="seo_keywords" value=""></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">页面描述</th>
+                                        <td width="80%"><textarea style="width:80%; height:100px;" name="seo_description"></textarea></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <div class="btn_operating">
+                                <input type="hidden" name="cat_id" value="{$model['cat_id']}"/>
+                                <input  type="submit" class="btn btn-primary btn-submit"/>
+                                <input  type="reset" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script type="text/javascript">
+    $(function(){
+        $("#moduleForm").bind('submit',function(){
+            $(".btn-submit").attr('disabled','disabled');
+            $.ajax({
+                type:'POST',
+                url:"{:url('module/update')}",
+                dataType:'json',
+                data:$("#moduleForm").serialize(),
+                beforeSend:function(){
+                    layer.msg('模块生成中', {
+                      icon: 16
+                      ,shade: 0.01
+                      ,time:false
+                    });
+                },
+                success:function(data){
+                    setTimeout(function(){
+                        if(data.code == 0){
+                            layer.msg(data.desc,{icon:1,time:1500});
+                            setTimeout(function(){
+                                location.href = "{:url('module/index')}";
+                            },1500);
+                        }else{
+                            layer.msg(data.desc,{icon:3,time:1500});
+                            $(".btn-submit").removeAttr('disabled');
+                        }
+                    },500);
+                },
+                error:function(e){
+                    console.info(e);
+                    $(".btn-submit").removeAttr('disabled');
+                }
+            });
+            return false;
+        });
+    });
+    var i = 0;
+    function addcategory(keys){
+       var keys = $(keys).parents('tr').attr('id');
+       var content = '<tr width="500" id="'+keys+''+i+'" class="move"> <td><select name="more_category[]" id="more_category[]" class="sel1"><option value="dantu">单图</option><option value="duotu">多图</option><option value="riqi">时间控件</option><option value="biaoti">副标题</option><option value="wenben">文本</option><option value="bianjiqiBaidu">百度编辑器</option></select></td><td><input type="text" name="more_category[]" id="more_category[]" value=""/></td><td><input type="text" name="more_category[]" id="more_category[]" placeholder="展示名"/><td><textarea  name="more_category[]" id="more_category[]" placeholder="建议*" cols="20" rows="1"/></textarea></td></td><td><input type="button" class="btnOther" onclick="delcategory(this)" value="取消"/>  <a onclick="moveup(this);" href="javascript:">上移</a><a onclick="movedown(this);" href="javascript:">下移</a></td></tr>';
+       $(".gridtable").append(content);
+    }
+    function delcategory(key){
+        var keys = $(key).parents('tr').attr('id');
+        $(key).parents('#' + keys).remove();
+    }
+    function addcontent(keys){
+       var keys = $(keys).parents('tr').attr('id');
+       var content = '<tr width="500" id="'+keys+''+i+'" class="moves"> <td><select name="more_content[]" id="more_content[]" class="sel1"><option value="dantu">单图</option><option value="duotu">多图</option><option value="riqi">时间控件</option><option value="biaoti">副标题</option><option value="wenben">文本</option><option value="bianjiqiBaidu">百度编辑器</option></select></td><td><input type="text" name="more_content[]" id="more_content[]"  value=""/></td><td><input type="text" name="more_content[]" id="more_content[]" placeholder="展示名"/><td><textarea  name="more_content[]" id="more_content[]" placeholder="建议*" cols="20" rows="1"/></textarea></td></td><td><input type="button" class="btnOther" onclick="delcontent(this)" value="取消"/> <a onclick="moveup(this);" href="javascript:">上移</a><a onclick="movedown(this);" href="javascript:">下移</a></td></tr>';
+       $(".gridtables").append(content);
+    }
+    function delcontent(key){
+        var keys = $(key).parents('tr').attr('id');
+        $(key).parents('#' + keys).remove();
+    }
+    function moveup(e){
+        var target = $(e).parent().parent().prev();
+        var clone = $(e).parent().parent().clone(true);
+        if(target.hasClass("move")){
+            $(e).parent().parent().remove();
+            target.before(clone);
+        }else if(target.hasClass("moves")){
+            $(e).parent().parent().remove();
+            target.before(clone);
+        }else{
+            alert("已经是最上层");
+        }
+    }
+    function movedown(e){
+        var target = $(e).parent().parent().next();
+        var clone = $(e).parent().parent().clone(true);
+        if(target.hasClass("move")){
+            $(e).parent().parent().remove();
+            target.after(clone);
+        }else if(target.hasClass("moves")){
+            $(e).parent().parent().remove();
+            target.after(clone);
+        }else{
+            alert("已经是最下层");
+        }
+    }
+</script>

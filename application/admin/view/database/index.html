@@ -1,0 +1,135 @@
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button  type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('database/index')}">数据备份</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">数据备份</div>
+                    <form action="" id="backForm" method="POST">
+                        <div class="Role_list">
+                            <div class="all-operate" style="margin-bottom: 20px;">
+                                <label class="list-all-check"><input type="checkbox" id="checkbox"/><em>全选/反选</em></label>
+                                <button id="backup" class="btn btn-primary" type="submit">数据备份</button>
+                            </div>
+                            <span style="float: right;line-height: 24px;font-size: 14px;color: #666;">(共{$tableNum}张记录，共计{$total})</span>
+                            <table id="Role_list" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>选择</th>
+                                        <th>数据库表</th>
+                                        <th>表注释</th>
+                                        <th>记录条数</th>
+                                        <th>占用空间</th>
+                                        <th>编码</th>
+                                        <th>创建时间</th>
+                                        <th>备份状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {volist name="lists" id="vo"}
+                                        <tr>
+                                            <td><input type="checkbox" name="checkbox[]" value="{$vo['name']}"/></td>
+                                            <td>{$vo['name']}</td>
+                                            <td>{$vo['comment']|tag_show}</td>
+                                            <td>{$vo['rows']}</td>
+                                          	<td>{$vo.data_length|format_bytes}</td>
+                                            <td>{$vo.collation}</td>
+                                            <td>{$vo.create_time}</td>
+                                            <td class="info">未备份</td>
+                                            <td>  
+                                                <button type="button" class="btn btn-primary btn-redirect" name="{:url('database/optimize',array('table'=>$vo['name']))}">优化</button> 
+                                                <button type="button" class="btn btn-warning btn-gray btn-redirect" name="{:url('database/repair',array('table'=>$vo['name']))}">修复</button>
+                                            </td>
+                                        </tr>
+                                    {/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        var tables = [];
+        $(function(){
+            $("#backForm").bind("submit",function(){
+                if($("input[name^='checkbox']:checked").length == 0){
+                    layer.alert('请选中要备份的数据表', {icon: 2});
+                    return false;
+                }
+                $("#backup").attr("disabled","disabled");
+                $.ajax({
+                    type:'POST',
+                    url:"{:url('database/backUp')}",
+                    data:$("#backForm").serialize(),
+                    dataType:'json',
+                    beforeSend:function(){
+                        layer.msg('备份请求中，请勿操作其他项', {
+                          icon: 16
+                          ,shade: 0.01
+                          ,time:false
+                        });
+                        $("#backup").html('正在发送备份请求');
+                    },
+                    success:function(data){
+                        if(data.code != 0){
+                            layer.alert(data.info, {icon: 2});
+                            $("#backup").removeAttr("disabled");
+                            $("#backup").html('数据备份');
+                        }else{
+                            $("#backup").html("开始备份，请不要关闭本页面！");
+                            tables = data.table;
+                            backup(data.tab);
+                            window.onbeforeunload = function(){ return "正在备份数据库，请不要关闭！" }
+                        }
+                    },
+                    error:function(e){
+                        console.info(e);
+                        layer.alert('请求失败，请稍后重试');
+                    },
+                    complete:function(){
+                        
+                    }
+                });
+                return false;
+            });
+            function backup(tab, status){
+                status && show_msg(tab.id, "开始备份...(0%)");
+                $.ajax({
+                    type:'GET',
+                    url:"{:url('database/backUp')}",
+                    data:tab,
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 0){
+                            show_msg(tab.id, data.info);
+                            if(!$.isPlainObject(data.tab)){
+                                $("#backup").removeAttr("disabled");
+                                $("#backup").html('备份完成，点击重新备份');
+                                layer.closeAll();
+                                window.onbeforeunload = function(){ return null }
+                                return;
+                            }
+                            backup(data.tab, tab.id != data.tab.id);
+                        }else{
+                            $("#backup").removeAttr("disabled");
+                            $("#backup").html('数据备份');
+                        }
+                    }
+                });
+            }
+            function show_msg(id, msg){
+                $("#backForm").find("input[value=" + tables[id] + "]").closest("tr").find(".info").html(msg);
+            }
+        });
+    </script>
+</html>

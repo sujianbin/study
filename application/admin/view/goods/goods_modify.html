@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+        <style type="text/css">
+            .goods-spec li{
+                text-align: left;
+                display: inline-block;
+                margin-right: 25px;
+                padding: 2px 0;
+            }
+            .goods-spec li>button{
+                display: inline-block;
+                height: 35px;
+                vertical-align: middle;
+            }
+            .goods-spec li>img{
+                display: inline-block !important;
+                margin: 0 auto;
+                width: 30px;
+                vertical-align: middle;
+            }
+            #Role_list_add td{
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button type="button" class="btn btn-primary btn-redirect" name="{:url('goods/index')}">商品列表</button>
+                    <button type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('goods/modify')}">添加商品</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">{$goods['id']|tag_show=['添加','编辑']}商品</div>
+                    <div class="Role_list">
+                        <ul class="s-goods-tab">
+                            <li><a class="current" href="javascript:void(0);">通用信息</a></li>
+                            <li><a href="javascript:void(0);">商品相册</a></li>
+                            <li><a href="javascript:void(0);">商品模型</a></li>
+                        </ul>
+                        <form name="myform" id="goodsForm" action="{:url('goods/update')}" method="post">
+                            <div class="s-goods-content">
+                                <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                    <tbody>
+    									<tr style="background-color: #fff !important; border: 0;">
+                                            <th colspan="2" style=" border: 0;">&nbsp;</th>
+                                            <!-- 占位行 -->
+                                        </tr>
+
+                                        <tr>
+                                            <th colspan="2" style="text-align: left; padding-left: 20px;">通用信息</th>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">商品名称</th>
+                                            <td width="80%"><input type="text" style="width:300px" name="goods_name" value="{$goods['goods_name']}"/>
+                                                <br />
+                                                <span class="ps">商品名称不能为空</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">所属分类</th>
+                                            <td width="80%">
+                                                <select name="cat_id" style="margin-left: 10px;height:35px">
+                                                    {volist name="goodsCategory" id="vo"}
+                                                        <option value="{$vo['id']}">{$vo['name']}</option>
+                                                    {/volist}
+                                                </select>
+                                                <br />
+                                                <span class="ps">请选择商品所属分类</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">商品品牌</th>
+                                            <td width="80%">
+                                                <select name="brand_id" style="margin-left: 10px;height:35px">
+                                                    <option value="0">所有品牌</option>
+                                                    {volist name="brandList" id="vo"}
+                                                        <option value="{$vo['id']}">{$vo['name']|get_first_charter} -- {$vo['name']}</option>
+                                                    {/volist}
+                                                </select>
+                                                <br />
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- <tr>
+                                            <th width="20%">成本价</th>
+                                            <td width="80%"><input type="text" style="width:300px" name="cost_price" value="{$goods['cost_price']}"/>
+                                                <br />
+                                                <span class="ps">成本价不能为空</span>
+                                            </td>
+                                        </tr> -->
+                                        
+                                        <tr>
+                                            <th width="20%">出售价</th>
+                                            <td width="80%"><input type="text" style="width:300px" name="goods_price" value="{$goods['goods_price']}"/>
+                                                <br />
+                                                <span class="ps">出售价不能为空</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">总库存</th>
+                                            <td width="80%"><input type="text" style="width:300px" name="store_count" value="{$goods['store_count']}"/>
+                                                <br />
+                                                <span class="ps"></span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">列表图</th>
+                                            <td width="80%">
+                                                <div class="y-onlinemanage">
+                                                    <div class="y-file-list">
+                                                        <ul class="clearfix">
+                                                            <ul class="s-file-list" id="goods_picture">
+                                                                {if !empty($goods['goods_picture'])}
+                                                                    <li class="file">
+                                                                        <div class="file-panel">
+                                                                            <span class="cancel">删除</span>
+                                                                        </div>
+                                                                        <div class="img">
+                                                                            <img src="{$goods['goods_picture']}" alt="">
+                                                                        </div>
+                                                                        <input type="hidden" name="goods_picture" value="{$goods['goods_picture']}" />
+                                                                    </li>
+                                                                {/if}
+                                                            </ul>
+                                                            <li class="file y-addpho js-uploadBox" onclick="webuploader(1,'goods_picture','goods','');">
+                                                                <div class="adp">
+                                                                    <h1>+</h1>
+                                                                    <p>上传图片</p>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <span class="ps" >图片建议大小805*95</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">商品简介</th>
+                                            <td width="80%"><textarea style="width:80%; height:100px;" name="goods_description">{$goods['goods_description']}</textarea><br><span class="ps"></span></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">商品详情描述</th>
+                                            <td width="80%"><script id="goods_detail" name="goods_detail" type="text/plain" style="width:90%;height:300px;margin-left: 10px;">{$goods['goods_detail']}</script><script type="text/javascript">UE.getEditor("goods_detail");</script><br/><span class="ps">商品详情描述不能为空</span></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">排序</th>
+                                            <td width="80%">
+                                                <input type="text" name="order_id" value="{if empty($goods['order_id'])}1000{else}{$goods['order_id']}{/if}" style="width:56px;text-align: center;">
+                                                <br />
+                                                <span class="ps">排序字段为1-999999之间的数字</span>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="s-goods-content" style="display: none;">
+                                <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                    <tbody>
+                                        
+                                        <tr style="background-color: #fff !important; border: 0;">
+                                            <th colspan="2" style=" border: 0;">&nbsp;</th>
+                                            <!-- 占位行 -->
+                                        </tr>
+
+                                        <tr>
+                                            <th colspan="2" style="text-align: left; padding-left: 20px;">商品相册</th>
+                                        </tr>    
+
+                                        <tr>
+                                            <th width="20%">商品相册</th>
+                                            <td width="80%">
+                                                <div class="y-onlinemanage">
+                                                    <label style="color: red;">*拖动图片可排序</label>
+                                                    <div class="y-file-list">
+                                                        <ul class="clearfix">
+                                                            <ul class="s-file-list" id="goods_image">
+                                                                {if is_array($goods['goods_image']) && !empty($goods['goods_image'][0])}
+                                                                    {foreach $goods['goods_image'] as $k=>$v}
+                                                                        <li class="file">
+                                                                            <div class="file-panel">
+                                                                                <span class="cancel">删除</span>
+                                                                            </div>
+                                                                            <div class="img">
+                                                                                <img src="{$v}" alt="">
+                                                                            </div>
+                                                                            <input type="hidden" name="goods_image[]" value="{$v}" />
+                                                                        </li>
+                                                                    {/foreach}
+                                                                {/if}
+                                                            </ul>
+                                                            <script type="text/javascript">
+                                                                layer.ready(function(){
+                                                                    layer.photos({
+                                                                        photos: $("#goods_image"),
+                                                                        anim: 0 //0-6的选择，指定弹出图片动画类型，默认随机
+                                                                    });
+                                                                });
+                                                            </script>
+                                                            <li class="file y-addpho js-uploadBox" onclick="webuploader(20,'goods_image','goods','');">
+                                                                <div class="adp">
+                                                                    <h1>+</h1>
+                                                                    <p>上传多图</p>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <span class="ps" >图片建议大小805*95</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="s-goods-content" style="display: none;overflow: hidden;">
+                                <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                    <tbody>
+                                        
+                                        <tr style="background-color: #fff !important; border: 0;">
+                                            <th colspan="2" style=" border: 0;">&nbsp;</th>
+                                            <!-- 占位行 -->
+                                        </tr>
+
+                                        <tr>
+                                            <th colspan="2" style="text-align: left; padding-left: 20px;">商品模型</th>
+                                        </tr>
+
+                                        <tr>
+                                            <th width="20%">商品模型</th>
+                                            <td width="80%">
+                                                <select name="goods_model" style="margin-left: 10px;height:35px">
+                                                    <option value="0">选择商品模型</option>
+                                                    {volist name="goodsModel" id="vo"}
+                                                        <option value="{$vo['id']}">{$vo['name']}</option>
+                                                    {/volist}
+                                                </select>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                                <div class="s-goods-left" id="s-goods-spec" style="width: 60%;float: left;">
+                                    <table  cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                        
+                                        <tr>
+                                            <td colspan="2">商品规格:</td>
+                                        </tr>
+                                        
+                                    </table>
+
+                                </div>
+                                
+                                <!-- 属性列表 -->
+                                <div class="s-goods-right" id="s-goods-attr" style="width: 40%;float: left;">
+                                    <table cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                        <tr>
+                                            <td colspan="2">商品属性:</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                            </div>
+                            <div class="btn_operating">
+                                <input type="hidden" name="id" value="{$goods['id']}"/>
+                                <input  type="submit" class="btn btn-primary btn-submit"/>
+                                <input  type="reset" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        $(function(){
+            $(".s-goods-tab").on('click','li>a',function(){
+                $(this).addClass("current").parent("li").siblings("li").find("a").removeClass("current");
+                var index = $(this).parent("li").index();
+                $(".s-goods-content").hide().eq(index).show();
+            });
+            $("select[name=brand_id] option[value='{$goods['brand_id']}']").attr('selected','selected');
+            $("select[name=goods_model] option[value='{$goods['goods_model']}']").attr('selected','selected');
+            $("select[name=cat_id] option[value='{$goods['cat_id']}']").attr('selected','selected');
+            //模型切换（商品规格和商品属性进行切换）
+            $("select[name=goods_model]").bind('change',function(){
+                var goods_id = "{$goods['id']}";
+                var model_id = $(this).val();
+                //属性变换
+                $.ajax({
+                    type:'GET',
+                    data:{goods_id:goods_id,model_id:model_id},
+                    url:"{:url('ajaxGoodsAttr')}",
+                    success:function(data){
+                        $("#s-goods-attr").html(data);
+                    }
+                });
+                //规格显示
+                $.ajax({
+                    type:'GET',
+                    data:{goods_id:goods_id,model_id:model_id},
+                    url:"{:url('ajaxGoodsSpec')}",
+                    success:function(data){
+                        $("#s-goods-spec").html(data);
+                    }
+                });
+            });
+            $("select[name=goods_model]").trigger('change');
+            //商品更新
+            $("#goodsForm").bind('submit',function(){
+                $(".btn-submit").attr('disabled','disabled');
+                $.ajax({
+                    type:'POST',
+                    url:"{:url('goods/update')}",
+                    dataType:'json',
+                    data:$("#goodsForm").serialize(),
+                    success:function(data){
+                        if(data.code == 0){
+                            layer.msg(data.desc,{icon:1,time:1500});
+                            setTimeout(function(){
+                                location.href = "{:url('goods/index')}";
+                            },1500);
+                        }else{
+                            layer.msg(data.desc,{icon:3,time:1500});
+                            $(".btn-submit").removeAttr('disabled');
+                        }
+                    },
+                    error:function(e){
+                        console.info(e);
+                        $(".btn-submit").removeAttr('disabled');
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</html>

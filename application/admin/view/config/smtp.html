@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    {volist name="group" id="vo"}
+                        <button  type="button" class="btn btn-primary btn-redirect {if $type eq $key}btn-current{/if}" name="{:url('config/index',['type'=>$key])}">{$vo}</button>
+                    {/volist}
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">{$group[$type]}</div>
+                    <div class="Role_list">
+                        <form name="myform" id="submitForm" action="" method="post">
+                            <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                <tbody>
+                                    
+                                    <tr>
+                                        <th width="20%">邮件发送服务器(SMTP)</th>
+                                        <td width="80%"><input type="text" style="width:40%;" name="smtp_server" value="{$model['smtp_server']}"><br><span class="ps">发送邮箱的smtp地址。如: smtp.gmail.com或smtp.qq.com或smtp.163.com</span></td>
+                                    </tr>
+									
+                                    <tr>
+                                        <th width="20%">服务器(SMTP)端口</th>
+                                        <td width="80%"><input type="text" style="width:80%;" name="smtp_port" value="{$model['smtp_port']}"><br><span class="ps">smtp的端口。默认为25。具体请参看各STMP服务商的设置说明 （如果使用Gmail，请将端口设为465）</span></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th width="20%">发件人名称</th>
+                                        <td width="80%"><input type="text" style="width:40%;" name="smtp_name" value="{$model['smtp_name']}"><br><span class="ps"></span></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">邮箱账号</th>
+                                        <td width="80%"><input type="text" style="width:40%;" name="smtp_user" value="{$model['smtp_user']}"><br><span class="ps">使用发送邮件的邮箱账号</span></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">邮箱密码/授权码</th>
+                                        <td width="80%"><input type="text" style="width:40%;" name="smtp_pwd" value="{$model['smtp_pwd']}"><br><span class="ps">使用发送邮件的邮箱密码,或者授权码。具体请参看各STMP服务商的设置说明</span></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">测试接收的邮件地址</th>
+                                        <td width="80%"><input type="text" style="width:40%;" name="smtp_test_email" value="{$model['smtp_test_email']}"><input type="button" class="btnOther" onclick="send_email();" value="测试"><br><span class="ps">首次请先保存配置再测试</span></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <div class="btn_operating">
+                                <input type="hidden" name="type" value="{$type}"/>
+                                <input  type="submit" class="btn btn-primary btn-submit"/>
+                                <input  type="reset" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+    	function send_email()
+    	{
+    		var email = $("input[name=smtp_test_email]").val();
+    		$.ajax({
+    			type:'POST',
+    			url:"{:url('config/sendEmail')}",
+    			data:{email:email},
+    			dataType:'json',
+    			success:function(data){
+    				if(data.code == 0){
+    					layer.msg('测试发送成功',{icon:1,time:2000});
+    				}else{
+    					layer.msg(data.desc,{icon:2,time:2000});
+    				}
+    			},
+    			error:function(e){
+    				console.info(e);
+    				layer.alert('请求失败，请稍后重试！');
+    			}
+    		});
+    	}
+    </script>
+</html>

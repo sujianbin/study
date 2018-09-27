@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button  type="button" class="btn btn-primary btn-redirect" name="{:url('admin/admin')}">管理员列表</button>
+                    <button  type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('admin/adminModify')}">添加管理员</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">{$model['admin_id']|tag_show=['添加','编辑']}管理员</div>
+                    <div class="Role_list">
+                        <form name="myform" action="{:url('admin/adminUpdate')}" method="post">
+                            <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                <tbody>
+                                  
+                                    <tr>
+                                        <th width="20%">用户名</th>
+                                        <td width="80%">
+                                        	<input type="text" style="width:300px" name="user_name" value="{$model['user_name']}"/>
+                                            <br />
+                                            <span class="ps">用户名不能为空</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">登录密码</th>
+                                        <td width="80%">
+                                        	<input type="text" style="width:300px" name="pwd" value="{$model['pwd']}"/>
+                                            <br />
+                                            <span class="ps">{$model['admin_id']|tag_show=['不填写默认为123456','不修改密码则无需填写']}</span>
+                                        </td>
+                                    </tr>
+									
+									<tr>
+                                        <th width="20%">所属角色</th>
+                                        <td width="80%">
+                                            <select name="role_id" style="margin-left: 10px;height:35px">
+                                                {volist name="role" id="vo"}
+                                                    <option value="{$vo['id']}">{$vo['role_name']}</option>
+                                                {/volist}
+                                            </select>
+                                            <br />
+                                            <span class="ps">请选择所属角色</span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <input type="hidden" name="admin_id" value="{$model['admin_id']}"/>
+                            <div class="btn_operating">
+                                <input  type="submit" class="btn btn-primary btn-submit"/>
+                                <input  type="reset" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        $(function(){
+            $("select[name=role_id] option[value='{$model['role_id']}']").attr('selected','selected');
+        });
+    </script>
+</html>

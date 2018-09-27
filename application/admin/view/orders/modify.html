@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+<body>
+    <div class="page-content">
+        <div class="Role_Manager_style">
+            <div class="Manager_style">
+                <div class="title_name">菜单列表</div>
+                <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                <button type="button" class="btn btn-primary" name="{:url('orders/index')}">订单列表</button>
+                <button type="button" class="btn btn-primary btn-gray" onclick="javascript:history.go(-1);">返回</button>
+            </div>
+            <!--基本信息开始-->
+            <div class="Manager_style">
+                <div class="title_name">订单信息</div>
+                <div class="Role_list">
+                    <table id="Role_list" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>订单号</th>
+                                <th>订单状态</th>
+                                <th>订单金额</th>
+                                <th>支付金额</th>
+                                <th>支付方式</th>
+                                <th>订单日期</th>
+                                <th>完成日期</th>
+                                <th>微信订单号</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{$model.id}</td>
+                                <td>{$model.orders_id}</td>
+                                <td>{if $model.is_pay == 1}已付款{else}未付款{/if}</td>
+                                <td>￥{$model.true_money}</td>
+                                <td>￥{$model.pay_money}</td>
+                                <td>{if $model.pay_type == 2}微信支付{else}余额支付{/if}</td>
+                                <td>{$model['create_time']|date='Y-m-d H:i:s'}</td>
+                                <td>{if !empty($model.pay_time)}{$model.pay_time|date='Y-m-d H:i:s'}{else}--{/if}</td>
+                                <td>{$model.out_trade_no}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--基本信息结束-->
+
+            <!--收货信息开始-->
+            <div class="Manager_style">
+                <div class="title_name">客户信息</div>
+                <div class="Role_list">
+                    <table id="Role_list" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>收货人</th>
+                                <th>联系电话</th>
+                                <th>地址</th>
+                                <th>详细地址</th>
+                                <th>备注</th>
+                                <th>是否需要发票</th>
+                                <th>发票开头</th>
+                                <th>发票信息</th>
+                                <th>是否提交资料</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{$model.m_name}</td>
+                                <td>{$model.m_phone}</td>
+                                <td>{$model.m_address}</td>
+                                <td>{$model.m_address_info}</td>
+                                <td>{$model.mark|tag_show}</td>
+                                <td>{if $model.is_invoice==1}需要{else}不需要{/if}</td>
+                                <td>{$model.invoice_header|tag_show}</td>
+                                <td>{$model.invoice_meg|tag_show}</td>
+                                <td>{if $model.is_info==1}是{else}否{/if}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--收货信息结束-->
+
+            <!--价格明细开始-->
+            <div class="Manager_style">
+                <div class="title_name">价格明细</div>
+                <div class="Role_list">
+                    <table id="Role_list" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>商品名称</th>
+                                <th>商品图片</th>
+                                <th>单价</th>
+                                <th>数量</th>
+                                <th>合计</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name="info" id="vo"}
+                                <tr>
+                                    <td>{$vo.goods_name}</td>
+                                    <td><img src="{$vo.goods_picture}" width="50" height="50px;"></td>
+                                    <td>￥{$vo.goods_price}</td>
+                                    <td>{$vo.goods_num}</td>
+                                    <td>￥{$vo.goods_num|goods_price=$vo.goods_price}</td>
+                                </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--价格明细结束-->
+
+            <!--基本操作-->
+            <div class="Manager_style">
+                <div class="title_name">基本操作</div>
+                <div class="Role_list">
+                    <!--form-->
+                    <form name="myform" id="updateForm" action="{:url('orders/update')}" method="post">
+                        <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                            <tbody>
+                                <tr>
+                                    <th width="20%">续费日期</th>
+                                    <td width="80%">
+                                        <input class="input" style="width:140px" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="date" type="text" name="expire_time" id="expire_time" value="{$model['expire_time']|date_show='Y-m-d'}" />
+                                        <br><span class="ps">当选择是否续费为是时，将会在续费日期对客户进行续费提醒</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th width="20%">订单状态</th>
+                                    <td width="80%">
+                                        <select name="status" style="min-width: 60px;min-height:30px;margin-left: 10px;">
+                                            <option value="1">未付款</option>
+                                            <option value="2">服务中</option>
+                                            <option value="3">已完成</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th width="20%">付款状态</th>
+                                    <td width="80%">
+                                        <select name="is_pay" style="min-width: 60px;min-height:30px;margin-left: 10px;">
+                                            <option value="0">未付款</option>
+                                            <option value="1">已付款</option>
+                                        </select>
+                                        <br>
+                                        <span class="ps">当状态变更为已付款时，订单状态不能为未付款</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th width="20%">是否发送微信通知</th>
+                                    <td width="80%">
+                                        <select name="is_notice" style="min-width: 60px;min-height:30px;margin-left: 10px;">
+                                            <option value="0">否</option>
+                                            <option value="1">是</option>
+                                        </select>
+                                        <br>
+                                        <span class="ps">当选择是时将会发送微信通知给当前客户</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th width="20%">操作备注</th>
+                                    <td width="80%"><textarea style="width:80%; height:100px;" name="mark"></textarea>
+                                        <br><span class="ps">操作备注不能为空</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="btn_operating">
+                            <input type="hidden" name="orders_id" value="{$model['id']}">
+                            <input type="submit" class="btn btn-primary" id="submit">
+                            <input type="reset" class="btn btn-warning">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--基本操作结束-->
+
+            <!--操作日志开始-->
+            <div class="Manager_style">
+                <div class="title_name">操作记录</div>
+                <div class="Role_list">
+                    <table id="Role_list" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>操作人</th>
+                                <th>订单状态</th>
+                                <th>付款状态</th>
+                                <th>微信通知</th>
+                                <th>操作时间</th>
+                                <th>操作备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {volist name="log" id="vo"}
+                                <tr>
+                                    <td>{$vo.user_name}</td>
+                                    <td>{$vo['is_pay']|order_status=$vo['status']}</td>
+                                    <td>{if $vo['is_pay'] == 1}已支付{else}未支付{/if}</td>
+                                    <td>{if $vo['is_notice'] == 1}是{else}否{/if}</td>
+                                    <td>{$vo.create_time|date='Y-m-d H:i:s'}</td>
+                                    <td>{$vo.mark}</td>
+                                </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--操作日志结束-->
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    $(function(){
+        $("select[name=is_pay] option[value={$model['is_pay']}]").attr("selected","selected");
+        $("select[name=status] option[value={$model['status']}]").attr("selected","selected");
+        $("#updateForm").bind('submit',function(){
+            $.ajax({
+                type:'POST',
+                url:"{:url('orders/update')}",
+                data:$("#updateForm").serialize(),
+                dataType:'json',
+                success:function(data){
+                    if(data.code == 0){
+                        layer.msg(data.desc,{icon:1,time:1500});
+                        setTimeout(function(){
+                            location.reload();
+                        },1500);
+                    }else{
+                        layer.msg(data.desc,{icon:3,time:1500});
+                        $(".btn-submit").removeAttr('disabled');
+                    }
+                },
+            });
+            return false;
+        });
+    });
+</script>
+</html>

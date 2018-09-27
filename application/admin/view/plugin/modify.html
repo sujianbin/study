@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button  type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('plugin/index')}">插件列表</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">{$model['id']|tag_show=['添加','编辑']}插件</div>
+                    <div class="Role_list">
+                        <form name="myform" action="{:url('plugin/update')}" method="post">
+                            <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                <tbody>
+
+                                    {volist name="model['config']['config']" id="vo"}
+                                        <tr>
+                                            <th width="20%">{$vo['name']}</th>
+                                            <td width="80%">
+                                                {if $vo['type'] == 'textarea'}
+                                                    <textarea style="width:80%; height:100px;" name="{$vo['name']}">{$model['data'][$vo['name']]}</textarea>
+                                                {elseif $vo['type'] == 'select'}
+                                                    <select name="{$vo['name']}" style="margin-left: 10px;height:35px">
+                                                        {volist name="vo['option']" id="v1"}
+                                                            <option value="{$key}">{$v1}</option>
+                                                        {/volist}
+                                                    </select>
+                                                    <script type="text/javascript">
+                                                        $(function(){
+                                                            $('select[name={$vo["name"]}] option[value={$model["data"][$vo["name"]]}]').prop('selected',true);
+                                                        })
+                                                    </script>
+                                                {else}
+                                                    <input type="text" style="width:300px" name="{$vo['name']}" value="{$model['data'][$vo['name']]}"/>
+                                                {/if}
+                                                <br />
+                                                <span class="ps">{$vo['msg']}</span>
+                                            </td>
+                                        </tr>
+                                    {/volist}
+                                    
+                                </tbody>
+                            </table>
+                            <div class="btn_operating">
+                                <input type="hidden" name="id" value="{$model['id']}"/>
+                                <input  type="submit" class="btn btn-primary btn-submit"/>
+                                <input  type="reset" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

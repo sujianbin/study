@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button  type="button" class="btn btn-primary btn-redirect" name="{:url('activity/index')}">活动列表</button>
+                    <button  type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('activity/modify')}">添加活动</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">{$model['id']|tag_show=['添加','编辑']}活动</div>
+                    <div class="Role_list">
+                        <form name="myform" action="{:url('activity/update')}" method="post">
+                            <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                <tbody>
+
+                                    <tr>
+                                        <th width="20%">活动标题</th>
+                                        <td width="80%"><input type="text" style="width:300px" name="title" value="{$model['title']}"/>
+                                            <br />
+                                            <span class="ps">活动标题不能为空</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+							            <th width="20%">开始日期</th>
+							            <td width="80%"><input class="input" style="width:140px" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:ii:ss'})" class="date" type="text" name="create_time" id="create_time" value="{$model['create_time']|date_show="Y-m-d H:i:s"}" /><br><span class="ps"></span></td>
+							        </tr>
+
+							        <tr>
+							            <th width="20%">截止日期</th>
+							            <td width="80%"><input class="input" style="width:140px" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="date" type="text" name="birthday" id="birthday" value="{$model['birthday']|date='Y-m-d'}" /><br><span class="ps"></span></td>
+							        </tr>
+
+
+                                    <tr>
+                                        <th width="20%">活动宣传图</th>
+                                        <td width="80%">
+                                            <input type="text" name="picture" style="width: 500px;" value="{$model['picture']}" />
+                                            
+                                            <br />
+                                            <span class="ps" >图片建议大小520*245</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">详细内容</th>
+                                        <td width="80%"><script id="detail" name="detail" type="text/plain" style="width:90%;height:300px;margin-left: 10px;">{$model['detail']}</script><script type="text/javascript">UE.getEditor("detail");</script><br/><span class="ps">详细内容不能为空</span></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">排序</th>
+                                        <td width="80%">
+                                            <input type="text" name="order_id" value="{if empty($model['order_id'])}1000{else}{$model['order_id']}{/if}" style="width:56px;text-align: center;">
+                                            <br />
+                                            <span class="ps">排序字段为1-999999之间的数字</span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <div class="btn_operating">
+                                <input type="hidden" name="id" value="{$model['id']}"/>
+                                <input  type="submit" class="btn btn-primary btn-submit"/>
+                                <input  type="reset" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

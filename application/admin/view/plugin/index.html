@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button  type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('plugin/index')}">插件列表</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">插件列表</div>
+                    <div class="Role_list">
+                        <table id="Role_list" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>插件名称</th>
+                                    <th>插件简述</th>
+                                    <th>图标</th>
+                                    <th>排序</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {volist name="lists" id="vo"}
+                                    <tr>
+                                        <td>{$vo['id']}</td>
+                                        <td>{$vo['name']}</td>
+                                        <td>{$vo['desc']}</td>
+                                        <td><a href="{$vo['icon']}" target="_blank"><img src="{$vo['icon']}" width="80" /></a></td>
+                                        <td class="edit_order" data-table="plugin" data-id="{$vo['id']}" data-value="{$vo['order_id']}" data-key="order_id">
+                                            <span>{$vo['order_id']}</span>
+                                            <input type="text" name="order_id" style="width: 60px;display: none;" class="edit_order_input" value="{$vo['order_id']}" />
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-open" title="插件配置" name="{:url('plugin/modify',array('id'=>$vo['id']))}">配置</button>
+                                        </td>
+                                    </tr>
+                                {/volist}
+                            </tbody>
+                        </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </body>
+</html>

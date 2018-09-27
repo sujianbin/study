@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                    <button  type="button" class="btn btn-primary btn-redirect btn-current" name="{:url('orders/index')}">订单列表</button>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">订单列表</div>
+                    <div class="Role_list">
+                        <form action="" method="get" id="searchForm">
+                            <div class="controlsWrap">
+                                <div class="mainWrap">
+                                    <section class="v-block">
+                                        <label class="v-lab">会员名称</label>
+                                        <input class="v-inp" type="text" name="title" value="{$name}" placeholder="可填写会员名称" />
+                                    </section>
+                                    <section class="v-block">
+                                        <label class="v-lab">所属会员</label>
+                                        <select name="id" class="v-sel">
+                                            <option value="0">全部</option>
+                                            {volist name="member" id="vo"}
+                                                <option value="{$vo['id']}">{$vo['realname']}</option>
+                                            {/volist}
+                                        </select>
+                                        <script type="text/javascript">
+                                            $("select[name=id] option[value={$id}]").attr('selected','selected');
+                                        </script>
+                                    </section>
+                                    <section class="v-block">
+                                        <label class="v-lab">订单编号</label>
+                                        <input class="v-inp" type="text" name="orders" value="{$orders}" placeholder="订单编号" />
+                                    </section>
+                                    <section class="v-block">
+                                        <label class="v-lab">支付方式</label>
+                                        <select name="pay_type" class="v-sel">
+                                            <option value="0">全部</option>
+                                            <option value="2">微信支付</option>
+                                            <option value="1">余额支付</option> 
+                                        </select>
+                                        <script type="text/javascript">
+                                            $("select[name=pay_type] option[value={$pay_type}]").attr('selected','selected');
+                                        </script>
+                                    </section>
+                                    <section class="v-block">
+                                        <label class="v-lab">付款状态</label>
+                                        <select name="is_pay" class="v-sel">
+                                            <option value="0">全部</option>
+                                            <option value="1">已付款</option>
+                                            <option value="2">未付款</option>
+                                        </select>
+                                        <script type="text/javascript">
+                                            $("select[name=is_pay] option[value={$is_pay}]").attr('selected','selected');
+                                        </script>
+                                    </section>
+                                    <section class="v-block">
+                                        <label class="v-lab">订单状态</label>
+                                        <select name="status" class="v-sel">
+                                            <option value="0">全部</option>
+                                            <option value="1">已付款</option>
+                                            <option value="2">服务中</option>
+                                            <option value="3">已完成</option>
+                                        </select>
+                                        <script type="text/javascript">
+                                            $("select[name=status] option[value={$status}]").attr('selected','selected');
+                                        </script>
+                                    </section>
+                                    <section class="v-block">
+                                        <label class="v-lab">下单时间</label>
+                                        <input class="input v-inp" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="date" type="text" name="btime"  placeholder="开始时间" value="{$btime}" />
+                                        <em class="v-sti">-</em>
+                                        <input class="input v-inp" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="date" type="text" name="etime" placeholder="结束时间" value="{$etime}"/>
+                                    </section>
+                                </div>
+                                <div class="RightWrap">
+                                    <input type="hidden" name="export" value="0"/>
+                                    <button class="input-search" id="input-search" type="button">搜索</button>
+                                </div>
+                            </div>
+                        </form>
+                    	<div class="all-operate" style="margin-bottom: 20px;">
+                            <button id="export" class="btn btn-primary" type="button">导出订单</button>
+                        </div>
+                        <span style="float: right;color: red;">删除订单，将删除订单详情（可能会包含代理记账产品）以及订单操作日志<br/><br/>续费提醒点击是时将会在订单付款满一年时进行续费提醒</span>
+                        <table id="Role_list" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+		                            <th>订单编号</th>
+		                            <th>会员名称</th>
+		                            <th>订单产品</th>
+		                            <th>订单金额</th>
+		                            <th>支付金额</th>
+		                            <th>支付方式</th>
+		                            <th>下单时间</th>
+		                            <th>支付时间</th>
+                                    <th>付款状态</th>
+                                    <th>订单状态</th>
+                                    <th>是否发票</th>
+                                    <th>收货地址</th>
+                                    <th>资料提供</th>
+                                    <th>续费提醒</th>
+		                            <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {volist name="lists" id="vo"}
+                                    <tr>
+			                            <td>{$vo['id']}</td>
+			                            <td>{$vo['out_trade_no']}</td>
+			                            <td>{$vo['realname']}</td>
+                                        <td>{$vo['goods_name']|cut=20}</td>
+                                        <td>{$vo['true_money']}</td>
+			                            <td>{$vo['pay_money']|tag_show}</td>
+                                        <td>{if $vo['is_pay'] == 1}{if $vo['pay_type'] == 2}微信支付{else}余额支付{/if}{else}--{/if}</td>
+			                            <td>{$vo['create_time']|date='Y-m-d H:i:s'}</td>
+                                        <td>{if !empty($vo['pay_time'])}{$vo['pay_time']|date='Y-m-d H:i:s'}{else}--{/if}</td>
+			                            <td>{if $vo['is_pay'] == 1}已支付{else}未支付{/if}</td>
+			                            <td>{$vo['is_pay']|order_status=$vo['status']}</td>
+                                        <td>{if $vo['is_invoice'] eq 1}<span style="color: blue;cursor: pointer;" class="invoice">点击查看</span>{else}否{/if}
+                                            <div class="change_Pass_style">
+                                                <ul class="xg_style" style="margin-top: 20px;text-align: center;">
+                                                    <li><label class="label_name">发票开头：</label>{$vo['invoice_header']}</li>
+                                                    <li><label class="label_name">发票信息：</label>{$vo['invoice_meg']}</li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td><span style="color: blue;cursor: pointer;" class="address">点击查看</span>
+                                            <div class="change_Pass_style">
+                                                <ul class="xg_style" style="margin-top: 20px;text-align: center;">
+                                                    <li><label class="label_name">联系人：</label>{$vo['m_name']}</li>
+                                                    <li><label class="label_name">联系电话：</label>{$vo['m_phone']}</li>
+                                                    <li><label class="label_name">地址：</label>{$vo['m_address']}</li>
+                                                    <li><label class="label_name">详细地址：</label>{$vo['m_address_info']}</li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td class="edit_show" data-table="orders" data-id="{$vo['id']}" data-value="{$vo['is_info']}" data-key="is_info">
+                                            {if $vo['is_info'] eq 1}
+                                                <span class="span-yes"><img src="/public/static/admin/images/yes.png"/></span>
+                                            {else}
+                                                <span class="span-no"><img src="/public/static/admin/images/cancel.png"/></span>
+                                            {/if}
+                                        </td>
+                                        <td class="edit_show" data-table="orders" data-id="{$vo['id']}" data-value="{$vo['is_notice']}" data-key="is_notice">
+                                            {if $vo['is_notice'] eq 1}
+                                                <span class="span-yes"><img src="/public/static/admin/images/yes.png"/></span>
+                                            {else}
+                                                <span class="span-no"><img src="/public/static/admin/images/cancel.png"/></span>
+                                            {/if}
+                                        </td>
+			                            <td>
+			                                <button type="button" class="btn btn-primary btn-redirect" name="{:url('orders/modify',array('id'=>$vo['id']))}">详情</button>
+                                            <button type="button" class="btn btn-warning btn-delete" name="{:url('orders/delete',array('id'=>$vo['id']))}">删除</button>
+			                            </td>
+			                        </tr>
+                                {/volist}
+                            </tbody>
+                        </table>
+                        {$lists|raw}
+                  </div>
+              </div>
+          </div>
+      </div>
+    </body>
+    <script type="text/javascript">
+        $(function(){
+            $(".invoice").bind('click',function(){
+                var html = '<div class="change_Pass_style" style="display:block;">' + $(this).siblings('.change_Pass_style').html() + '</div>';
+                layer.open({
+                    title:'发票信息',
+                    type:1,
+                    area: ['400px','300px'],
+                    shadeClose: true,
+                    content: html,
+                    btn:['关闭窗口'],
+                });
+            });
+            $(".address").bind('click',function(){
+                var html = '<div class="change_Pass_style" style="display:block;">' + $(this).siblings('.change_Pass_style').html() + '</div>';
+                layer.open({
+                    title:'收货信息',
+                    type:1,
+                    area: ['500px','400px'],
+                    shadeClose: true,
+                    content: html,
+                    btn:['关闭窗口'],
+                });
+            });
+        });
+    </script>
+</html>

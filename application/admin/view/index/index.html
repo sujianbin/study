@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{layout name="public/layout" /}
+	<script type="text/javascript" src="/public/static/admin/js/index.js"></script>
+	<script type="text/javascript">
+		document.write('<div id="loader_container"><div id="loader"><div align="center">页面组件加载中……<br />首次加载可能会花费一分钟，请稍候...</div><div id="loader_bg"><div id="progress"> </div></div></div></div>');
+		var pos = 0;
+		var dir = 2;
+		var len = 0;
+	</script>
+</head>
+<body>
+	<div class="header">
+		<!-- <div class="header-left" style="background: url(/public/static/admin/images/logo.png) center no-repeat;"></div> -->
+		<div class="header-left">个人练习</div>
+		<div class="header-middle">
+			<ul>
+				{volist name='topMenu' id='vo'}
+					<li {if $i eq 1}class="curr"{/if} data-c="menu-{$key}">{$vo}</li>
+				{/volist}
+			</ul>
+		</div>
+		<script type="text/javascript">
+			$(".header-middle").on("click","li",function(){
+				$(this).addClass("curr");
+				$(".nav-list>ul>li").addClass("c-hide");
+				$("."+$(this).data("c")).removeClass("c-hide");
+				$(this).siblings("li").removeClass("curr");
+			});
+		</script>
+		<div class="header-right">
+			<div class="header-right-top"> <em class="time"></em><span class="author">欢迎使用,{$Think.session.user_name}</span></div>
+			<div class="header-right-nav">
+				<ul>
+					<li><a href='javascript:;' id="change-password" name="{:url('admin/adminModify',['id'=>$Think.session.admin_id])}" title="修改密码">修改密码</a></li>
+					<li><a href='javascript:;' id="exit-system" title="退出系统">退出系统</a></li>
+					<li><a href='javascript:;' id="clear-flash" title="清除缓存">清除缓存</a></li>
+					<li><a href='/' target="_blank" title="网站首页">网站首页</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="left">
+		<div class="left-top">您的网站后台管理系统</div>
+		<div class="nav-list">
+			<ul>
+				<li class="menu-system"><a href="{:url('index/index')}" class="icon-home on" title="系统首页">系统首页</a></li>
+
+				{foreach $leftMenu as $k=>$vo}
+					{foreach $vo as $v1}
+						<li class="menu-{$k} {if $k neq 'system'} c-hide{/if}"><a href="javascript:;" class="icon-{$v1['icon']}">{$v1['title']}</a>
+							<ul class="submenu">
+								{foreach $v1['child'] as $v2}
+									<li>
+										<a href="javascript:;" name="{if isset($v2['param'])}{:url($v2['url'],$v2['param'])}{else /}{:url($v2['url'])}{/if}" title="{$v2['title']}" class="iframeurl">{$v2['title']}</a>
+									</li>
+								{/foreach}
+							</ul>
+						</li>
+					{/foreach}
+				{/foreach}
+
+			</ul>
+		</div>
+	</div>
+	<div class="right">
+		<div class="right-top"><a href="/">首页</a>><span class="next-a">系统首页</span></div>
+		<iframe id="iframe" onload="remove_loading();" frameborder="0" src="{:url('Index/home')}"></iframe>
+	</div>
+	<div class="hide" title="隐藏"></div>
+</body>
+</html>
+<script type="text/javascript">
+	/*清除缓存*/
+	$('#clear-flash').bind('click', function(){
+	  	$.post("{:url('admin/cache')}",function(data){
+	    	layer.msg('缓存清除成功',{icon:"1",time:2000},function(index){
+	      		layer.close(index);
+	    	});
+	  	})
+	});
+	/*退出系统*/
+	$('#exit-system').bind('click', function(){
+        layer.confirm('是否确定退出系统？', {
+        	btn: ['是','否'] //按钮
+        }, 
+      	function(){
+        	location.href = "{:url('admin/logout')}";
+        });
+    });
+</script>

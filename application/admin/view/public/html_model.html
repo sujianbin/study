@@ -1,0 +1,44 @@
+{volist name="html_models" id="vo"}
+	{if $vo["type"] == "dantu"}
+		<tr>
+            <th width="20%">{$vo["name"]}</th>
+            <td width="80%">
+                <div class="y-onlinemanage">
+                    <div class="y-file-list">
+                        <ul class="clearfix">
+                            <ul class="s-file-list" id="{$vo["field"]}">
+                                {if !empty($model[$vo["field"]])}
+                                    <li class="file">
+                                        <div class="file-panel">
+                                            <span class="cancel">删除</span>
+                                        </div>
+                                        <div class="img">
+                                            <img src="{$model[$vo["field"]]}" alt="">
+                                        </div>
+                                        <input type="hidden" name="{$vo["field"]}" value="{$model[$vo["field"]]}" />
+                                    </li>
+                                {/if}
+                            </ul>
+                            <li class="file y-addpho js-uploadBox" onclick="webuploader(1,"{$vo["field"]}","{$controller}","");">
+                                <div class="adp">
+                                    <h1>+</h1>
+                                    <p>上传图片</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <br />
+                <span class="ps">{$vo["msg"]}</span>
+            </td>
+        </tr>
+	{elseif $vo["type"] == "duotu"}
+		
+	{elseif $vo["type"] == "biaoti"}
+		<tr>
+            <th width="20%">{$vo["name"]}</th>
+            <td width="80%"><input type="text" style="width:300px" name="{$vo["field"]}" value="{$model[$vo["field"]]}"/><br><span class="ps">{$vo["msg"]}</span></td>
+        </tr>
+    {else}
+	{/if}
+{/volist}

@@ -1,0 +1,109 @@
+<!-- 规格对应选项 -->
+<table cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                        
+	<tr>
+	    <td colspan="2">商品规格:</td>
+	</tr>
+	
+	{volist name="lists" id="vo"}
+		<tr>
+		    <td width="100" style="text-align: center;">{$vo['spec_name']}:</td>
+		    <td>
+		        <ul class="goods-spec">
+		        	{volist name="vo['item']" id="v1"}
+			            <li>
+			               	<button type="button" data-spec_id="{$vo['id']}" data-item_id="{$key}" class="btn {$key|spec_checked=$itemIds}">{$v1}</button>
+			                <img id="item_img_{$key}" src="{$goodsSpecImageList[$key]|default='/public/static/admin/images/add-img.png'}" onclick="webuploader2({$key});" />
+			                <input type="hidden" name="item_img[{$key}]" value="{$goodsSpecImageList[$key]}">
+			            </li>
+		            {/volist}
+		        </ul>
+		    </td>
+		</tr>
+	{/volist}
+
+</table>
+
+<!-- 规格价格填写框 -->
+<table id="s-goods-spec-input" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+    
+</table>
+
+<script type="text/javascript">
+	$(function(){
+		ajax_get_spec_input();
+	});
+	var item;
+	//规格项点击
+	$('.goods-spec').on('click','.btn',function(){
+		$(this).toggleClass('btn-current');
+		ajax_get_spec_input();
+	});
+	//图片上传
+	function webuploader2(k)
+	{
+		item = k;
+		webuploader(1,'','goods','callback');
+	}
+	//图片上传成功回调
+	function callback(picture_tmp)
+	{
+		$("#item_img_"+item).attr('src',picture_tmp);
+        $("input[name='item_img["+item+"]']").val(picture_tmp);
+	}
+	//触发商品规格输入框显示
+	function ajax_get_spec_input()
+	{
+		var spec_arr = {};// spec_arr[1] = [1,2];spec_arr[2] = [3,4]
+		$("#s-goods-spec button.btn-current").each(function(){
+			var spec_id = $(this).data('spec_id');
+			var item_id = $(this).data('item_id');
+			if(!spec_arr.hasOwnProperty(spec_id))
+				spec_arr[spec_id] = [];
+		    spec_arr[spec_id].push(item_id);
+		});
+		var goods_id = $('input[name=id]').val();
+		$.ajax({
+			type:'POST',
+			url:"{:url('goods/ajaxGetSpecInput')}",
+			data:{goods_id:goods_id,spec_arr:spec_arr},
+			success:function(data){
+				$("#s-goods-spec-input").html(data);
+				if(data != '<tr><td></td><td>价格</td><td>库存</td></tr>') merge_cells();
+			}
+		});
+	}
+	//合并单元格
+	function merge_cells() {
+        var tab = document.getElementById("s-goods-spec-input"); //要合并的tableID
+        var maxCol = 1, val, count, start;  //maxCol：合并单元格作用到多少列  
+        if (tab != null) {
+            for (var col = maxCol - 1; col >= 0; col--) {
+                count = 1;
+                val = "";
+                for (var i = 0; i < tab.rows.length; i++) {
+                    if (val == tab.rows[i].cells[col].innerHTML) {
+                        count++;
+                    } else {
+                        if (count > 1) { //合并
+                            start = i - count;
+                            tab.rows[start].cells[col].rowSpan = count;
+                            for (var j = start + 1; j < i; j++) {
+                                tab.rows[j].cells[col].style.display = "none";
+                            }
+                            count = 1;
+                        }
+                        val = tab.rows[i].cells[col].innerHTML;
+                    }
+                }
+                if (count > 1) { //合并，最后几行相同的情况下
+                    start = i - count;
+                    tab.rows[start].cells[col].rowSpan = count;
+                    for (var j = start + 1; j < i; j++) {
+                        tab.rows[j].cells[col].style.display = "none";
+                    }
+                }
+            }
+        }
+    }
+</script>

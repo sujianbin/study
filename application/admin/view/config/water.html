@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {layout name="public/layout" /}
+        <style type="text/css">
+			.s-water-loc {
+				width: 280px;
+				margin-left: 10px;
+			}
+			.s-water-loc li {
+				width: 32%;
+				height: 30px;
+				line-height: 30px;
+				float: left;
+				margin-left: -1px;
+				margin-top: -1px;
+				border: 1px solid #CCC;
+			}
+            #water-picker {
+                width: 80px;
+                border-right:40px solid green;
+            }
+        </style>
+        <link rel="stylesheet" href="__PLUGIN__/colpick/css/colpick.css" type="text/css" />
+        <script type="text/javascript" charset="utf-8" src="__PLUGIN__/colpick/js/colpick.js"></script>
+    </head>
+    <body>
+        <div class="page-content">
+            <div class="Role_Manager_style">
+                <div class="Manager_style">
+                    <div class="title_name">菜单列表</div>
+                    {volist name="group" id="vo"}
+                        <button  type="button" class="btn btn-primary btn-redirect {if $type eq $key}btn-current{/if}" name="{:url('config/index',['type'=>$key])}">{$vo}</button>
+                    {/volist}
+                    <a href="javascript:location.reload();" class="flash" title="刷新"></a>
+                </div>
+                <div class="Manager_style">
+                    <div class="title_name">{$group[$type]}</div>
+                    <div class="Role_list">
+                        <form name="myform" id="submitForm" action="" method="post">
+                            <table id="Role_list1" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover table-m">
+                                <tbody>
+                                    <tr>
+                                        <th width="20%">商品图片是否开启水印</th>
+                                        <td width="80%">
+                                            <div class="radio-box">
+                                                <label class="open {if !isset($model['is_water']) or $model['is_water'] eq 1}selected{/if}" data-value="是">
+                                                    <input type="radio" name="is_water" value="1"/>
+                                                </label>
+                                                <label class="close {if isset($model['is_water']) and $model['is_water'] eq 0}selected{/if}" data-value="否">
+                                                    <input type="radio" name="is_water" value="0" />
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">水印类型</th>
+                                        <td width="80%">
+                                            <select name="water_type" style="margin-left: 10px;height:35px">
+                                                <option value="1">文字</option>
+                                                <option value="2">图片</option>
+                                            </select>
+                                            <br />
+                                        </td>
+                                    </tr>
+
+                                    <tr class="water-picture">
+                                        <th width="20%">水印图片</th>
+                                        <td width="80%">
+                                            <div class="y-onlinemanage">
+                                                <div class="y-file-list">
+                                                    <ul class="clearfix">
+                                                        <ul class="s-file-list" id="water_picture">
+                                                            {if !empty($model['water_picture'])}
+                                                                <li class="file">
+                                                                    <div class="file-panel">
+                                                                        <span class="cancel">删除</span>
+                                                                    </div>
+                                                                    <div class="img">
+                                                                        <img src="{$model['water_picture']}" alt="">
+                                                                    </div>
+                                                                    <span class="icon"></span>
+                                                                </li>
+                                                            {/if}
+                                                        </ul>
+                                                        <li class="file y-addpho js-uploadBox" onclick="webuploader(1,'water_picture','tmp','');">
+                                                            <div class="adp">
+                                                                <h1>+</h1>
+                                                                <p>上传图片</p>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="water-text">
+                                        <th width="20%">水印文字</th>
+                                        <td width="80%">
+                                            <input type="text" name="water_text" style="width: 500px;" value="{$model['water_text']}" />
+                                            <br />
+                                            <span class="ps" ></span>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="water-text">
+                                        <th width="20%">文字字号</th>
+                                        <td width="80%">
+                                            <input type="text" name="water_size" style="width: 500px;" value="{$model['water_size']}" />
+                                            <br />
+                                            <span class="ps" ></span>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="water-text">
+                                        <th width="20%">文字颜色</th>
+                                        <td width="80%">
+                                            <input type="text" name="water_color" id="water-picker" style="border-right: 40px solid {$model['water_color']};" value="{$model['water_color']}" />
+                                            <div class="color-box"></div>
+                                            <br />
+                                            <span class="ps">如‘#000000’代表黑色</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">水印透明度</th>
+                                        <td width="80%">
+                                            <input type="text" name="water_degree" style="width: 500px;" value="{$model['water_degree']}" />
+                                            <br />
+                                            <span class="ps" >透明度在1-100之间，0代表完全透明，100代表不透明</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="20%">JPEG水印质量</th>
+                                        <td width="80%">
+                                            <input type="text" name="water_quality" style="width: 500px;" value="{$model['water_quality']}" />
+                                            <br />
+                                            <span class="ps" >水印质量请设置为0-100之间的数字,决定 jpg 格式图片的质量</span>
+                                        </td>
+                                    </tr>
+
+									<tr>
+                                        <th width="20%">水印位置</th>
+                                        <td width="80%">
+                                            <ul class="s-water-loc">
+                                            	<li><label><input type="radio" name="water_localtion" value="1" />顶部居左</label></li>
+                                            	<li><label><input type="radio" name="water_localtion" value="2" />顶部居中</label></li>
+                                            	<li><label><input type="radio" name="water_localtion" value="3" />顶部居右</label></li>
+
+                                            	<li><label><input type="radio" name="water_localtion" value="4" />中部居左</label></li>
+                                            	<li><label><input type="radio" name="water_localtion" value="5" />中部居中</label></li>
+                                            	<li><label><input type="radio" name="water_localtion" value="6" />中部居右</label></li>
+
+                                            	<li><label><input type="radio" name="water_localtion" value="7" />底部居左</label></li>
+                                            	<li><label><input type="radio" name="water_localtion" value="8" />底部居中</label></li>
+                                            	<li><label><input type="radio" name="water_localtion" value="9" />底部居右</label></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                   
+                                </tbody>
+                            </table>
+                            <div class="btn_operating">
+                                <input type="hidden" name="type" value="{$type}"/>
+                                <input  type="submit" class="btn btn-primary btn-submit"/>
+                                <input  type="reset" class="btn btn-warning"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+	    $(function(){
+            var type = "{$model['water_type']}";
+            if(type == 2){
+                $(".water-picture").show();
+                $(".water-text").hide();
+            }else{
+                $(".water-picture").hide();
+                $(".water-text").show();
+            }
+	        $("input[type=radio][name=is_water][value={$model['is_water']}]").attr("checked","checked");
+	        $("input[type=radio][name=water_localtion][value={$model['water_localtion']}]").attr("checked","checked");
+	        $("select[name=water_type] option[value='{$model['water_type']}']").attr('selected','selected');
+            $('#water-picker').colpick({
+                layout:'hex',
+                submit:0,
+                colorScheme:'dark',
+                onChange:function(hsb,hex,rgb,el,bySetColor) {
+                    $(el).css('border-color','#'+hex);
+                    // Fill the text box just if the color was set using the picker, and not the colpickSetColor function.
+                    if(!bySetColor) $(el).val('#'+hex);
+                }
+            }).keyup(function(){
+                $(this).colpickSetColor('#'+this.value);
+            });
+            $("select[name=water_type]").bind('change',function(){
+                if($(this).val() == 2){
+                    $(".water-picture").show();
+                    $(".water-text").hide();
+                }else{
+                    $(".water-picture").hide();
+                    $(".water-text").show();
+                }
+            });
+	    });
+	</script>
+</html>
