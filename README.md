@@ -1,6 +1,6 @@
 <<<<<<< HEAD
 # study
-a project for study
+a project for study use thinkphp5.1
 =======
 ThinkPHP 5.1
 ===============
